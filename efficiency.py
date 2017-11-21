@@ -18,15 +18,9 @@ import optparse
 usage = "usage: %prog [options]"
 parser = optparse.OptionParser(usage)
 parser.add_option("-v", "--variable", action="store", type="string", dest="variable", default="digi_layer")
-parser.add_option("-c", "--cut", action="store", type="string", dest="cut", default="")
-parser.add_option("-l", "--lepton", action="store", type="string", dest="lepton", default="mu3")
-parser.add_option("-r", "--run", action="store", type="string", dest="run", default="")
-parser.add_option("-a", "--all", action="store_true", default=False, dest="all")
+parser.add_option("-l", "--local", action="store_true", default=False, dest="local")
 parser.add_option("-b", "--bash", action="store_true", default=False, dest="bash")
-parser.add_option("-B", "--blind", action="store_true", default=False, dest="blind")
-parser.add_option("-f", "--final", action="store_true", default=False, dest="final")
-parser.add_option("-s", "--super_layer", action="store", type="string", default="1", dest="super_layer")
-parser.add_option("-R", "--rebin", action="store_true", default=True, dest="rebin")
+#parser.add_option("-s", "--super_layer", action="store", type="string", default="1", dest="super_layer")
 (options, args) = parser.parse_args()
 if options.bash: gROOT.SetBatch(True)
 
@@ -34,7 +28,7 @@ if options.bash: gROOT.SetBatch(True)
 
 gStyle.SetOptStat(0)
 
-LOCAL       = False
+LOCAL       = options.local
 NTUPLEDIR   = "/home/lisa/GIFcode/GIF_code/ntuples_POA/" if LOCAL else "/eos/cms/store/group/dpg_dt/comm_dt/gif++_2017/POA/"
 DATE        = '17_nov'
 ########## SAMPLES ##########
