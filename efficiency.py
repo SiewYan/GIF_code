@@ -17,7 +17,7 @@ from variables import *
 import optparse
 usage = "usage: %prog [options]"
 parser = optparse.OptionParser(usage)
-parser.add_option("-v", "--variable", action="store", type="string", dest="variable", default="digi_wire")
+parser.add_option("-v", "--variable", action="store", type="string", dest="variable", default="digi_layer")
 parser.add_option("-c", "--cut", action="store", type="string", dest="cut", default="")
 parser.add_option("-l", "--lepton", action="store", type="string", dest="lepton", default="mu3")
 parser.add_option("-r", "--run", action="store", type="string", dest="run", default="")
@@ -34,11 +34,31 @@ if options.bash: gROOT.SetBatch(True)
 
 gStyle.SetOptStat(0)
 
-LOCAL       = True
+LOCAL       = False
 NTUPLEDIR   = "/home/lisa/GIFcode/GIF_code/ntuples_POA/" if LOCAL else "/eos/cms/store/group/dpg_dt/comm_dt/gif++_2017/POA/"
-
+DATE        = '17_nov'
 ########## SAMPLES ##########
-sign_sampl = {
+'''
+16 nov
+5856    20 mV     100k
+5857    30 mV     100k
+5858    40 mV     100k
+5859    70 mV     116k
+
+17 nov
+5862    20          50k
+5863    30          52k
+5864    40          51k
+5865    70          50k
+5866   100         100k
+5867   150         100k
+5868   200         100k
+
+'''
+
+sign_sampl = {}
+
+sign_sampl_31_oct = {
     'Th30' : {
         'files' : ['DTNtuple_GIF_r5742'],#threshold scan
         'run_number' : 5742,#threshold scan
@@ -68,7 +88,129 @@ sign_sampl = {
     },
 }
 
-run_on_files = ['Th20', 'Th30', 'Th40', 'Th100', 'Th150']
+sign_sampl_8_nov = {
+    'Th30' : {
+        'files' : ['DTNtuple_GIF_r5773'],#threshold scan
+        'run_number' : 5773,#threshold scan
+        'threshold' : 30,
+    },
+    'Th20' : {
+        'files' : ['DTNtuple_GIF_r5774'],#threshold scan
+        'run_number' : 5774,#threshold scan
+        'threshold' : 20,
+    },
+    'Th40' : {
+        'files' : ['DTNtuple_GIF_r5775'],#threshold scan
+        'run_number' : 5775,#threshold scan
+        'threshold' : 40,
+    },
+    'Th100' : {
+        'files' : ['DTNtuple_GIF_r5776'],#threshold scan
+        'run_number' : 5776,#threshold scan
+        'threshold' : 100,
+    },
+    'Th150' : {
+        'files' : ['DTNtuple_GIF_r5777'],#threshold scan
+        'run_number' : 5777,#threshold scan
+        'threshold' : 150,
+    },
+}
+
+
+sign_sampl_9_nov = {
+    'Th20' : {
+        'files' : ['DTNtuple_GIF_r5807'],#threshold scan
+        'run_number' : 5807,#threshold scan
+        'threshold' : 20,
+    },
+    'Th30' : {
+        'files' : ['DTNtuple_GIF_r5804'],#threshold scan
+        'run_number' : 5804,#threshold scan
+        'threshold' : 30,
+    },
+    'Th40' : {
+        'files' : ['DTNtuple_GIF_r5808'],#threshold scan
+        'run_number' : 5808,#threshold scan
+        'threshold' : 40,
+    },
+    'Th70' : {
+        'files' : ['DTNtuple_GIF_r5809'],#threshold scan
+        'run_number' : 5809,#threshold scan
+        'threshold' : 70,
+    },
+    'Th100' : {
+        'files' : ['DTNtuple_GIF_r5810'],#threshold scan
+        'run_number' : 5810,#threshold scan
+        'threshold' : 100,
+    },
+    'Th150' : {
+        'files' : ['DTNtuple_GIF_r5811'],#threshold scan
+        'run_number' : 5811,#threshold scan
+        'threshold' : 150,
+    },
+    'Th200' : {
+        'files' : ['DTNtuple_GIF_r5812'],#threshold scan
+        'run_number' : 5812,#threshold scan
+        'threshold' : 200,
+    },
+}
+
+
+sign_sampl_17_nov = {
+    'Th20' : {
+        'files' : ['DTNtuple_GIF_r5862'],#threshold scan
+        'run_number' : 5862,#threshold scan
+        'threshold' : 20,
+    },
+    'Th30' : {
+        'files' : ['DTNtuple_GIF_r5863'],#threshold scan
+        'run_number' : 5863,#threshold scan
+        'threshold' : 30,
+    },
+    'Th40' : {
+        'files' : ['DTNtuple_GIF_r5864'],#threshold scan
+        'run_number' : 5864,#threshold scan
+        'threshold' : 40,
+    },
+    'Th70' : {
+        'files' : ['DTNtuple_GIF_r5865'],#threshold scan
+        'run_number' : 5865,#threshold scan
+        'threshold' : 70,
+    },
+    'Th100' : {
+        'files' : ['DTNtuple_GIF_r5866'],#threshold scan
+        'run_number' : 5866,#threshold scan
+        'threshold' : 100,
+    },
+    'Th150' : {
+        'files' : ['DTNtuple_GIF_r5867'],#threshold scan
+        'run_number' : 5867,#threshold scan
+        'threshold' : 150,
+    },
+    'Th200' : {
+        'files' : ['DTNtuple_GIF_r5868'],#threshold scan
+        'run_number' : 5868,#threshold scan
+        'threshold' : 200,
+    },
+}
+
+if DATE == "17_nov":
+    sign_sampl = sign_sampl_17_nov
+elif DATE == "9_nov":
+    sign_sampl = sign_sampl_9_nov
+elif DATE == "8_nov":
+    sign_sampl = sign_sampl_8_nov
+elif DATE == "31_oct":
+    sign_sampl = sign_sampl_31_oct
+
+run_on_files = []
+for a in sorted(sign_sampl):
+    run_on_files.append(a)
+
+#run_on_files = ['Th20', 'Th30', 'Th40', 'Th100', 'Th150']
+
+
+#################################
 min_run = 10000000000000000000000
 max_run = 0 
 for l in run_on_files:
@@ -76,7 +218,7 @@ for l in run_on_files:
     max_run = max(max_run,int(sign_sampl[l]['run_number']))
 run_interval = 'r'+str(min_run)+'-r'+str(max_run)
 print "Threshold scan performed in GIF++ runs ", run_interval
-outpath = "/home/lisa/GIFcode/GIF_code/plots/" if LOCAL else "..."
+outpath = "/home/lisa/GIFcode/GIF_code/plots/" if LOCAL else "plots/"
 NORM = False
 if options.variable == "digi_layer":
     NORM = True
