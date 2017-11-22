@@ -30,7 +30,7 @@ gStyle.SetOptStat(0)
 
 LOCAL       = options.local
 NTUPLEDIR   = "/home/lisa/GIFcode/GIF_code/ntuples_POA/" if LOCAL else "/eos/cms/store/group/dpg_dt/comm_dt/gif++_2017/POA/"
-DATE        = '17_nov'
+DATE        = '31_oct'#'3_nov'#'9_nov'#'17_nov'#'31_oct'#
 ########## SAMPLES ##########
 '''
 16 nov
@@ -82,7 +82,7 @@ sign_sampl_31_oct = {
     },
 }
 
-sign_sampl_8_nov = {
+sign_sampl_3_nov = {
     'Th30' : {
         'files' : ['DTNtuple_GIF_r5773'],#threshold scan
         'run_number' : 5773,#threshold scan
@@ -192,8 +192,8 @@ if DATE == "17_nov":
     sign_sampl = sign_sampl_17_nov
 elif DATE == "9_nov":
     sign_sampl = sign_sampl_9_nov
-elif DATE == "8_nov":
-    sign_sampl = sign_sampl_8_nov
+elif DATE == "3_nov":
+    sign_sampl = sign_sampl_3_nov
 elif DATE == "31_oct":
     sign_sampl = sign_sampl_31_oct
 
@@ -670,7 +670,7 @@ graph.SetLineWidth(2)
 graph.SetLineStyle(2)
 graph.GetXaxis().SetTitle("threshold [mV]")
 graph.GetYaxis().SetTitleOffset(1.2)
-graph.GetYaxis().SetTitle("rate")
+graph.GetYaxis().SetTitle("rate [kHz]")
 graph.Draw("APL")
 latex = TLatex()
 latex.SetNDC()
@@ -690,6 +690,9 @@ etichetta.DrawLatex(0.45, 0.8, "#splitline{SL1_L1 threshold scan}{Runs: "+str(ru
 can_scan_SL1_L1.Update()
 can_scan_SL1_L1.Print(outpath + "ThresholdScan_SL1_L1_"+run_interval+".png")
 can_scan_SL1_L1.Print(outpath + "ThresholdScan_SL1_L1_"+run_interval+".pdf")
+graph.SetName("ThresholdScan_SL1_L1_"+run_interval)
+new_file_SL1_L1 = TFile(outpath + "Graph_thresholdScan_SL1_L1_"+run_interval+ ".root",'RECREATE')
+graph.Write()
 graph.Set(0)
 
 #SL1_L4
@@ -712,7 +715,7 @@ graph.SetLineWidth(2)
 graph.SetLineStyle(2)
 graph.GetXaxis().SetTitle("threshold [mV]")
 graph.GetYaxis().SetTitleOffset(1.2)
-graph.GetYaxis().SetTitle("rate")
+graph.GetYaxis().SetTitle("rate [kHz]")
 graph.Draw("APL")
 latex = TLatex()
 latex.SetNDC()
@@ -732,6 +735,9 @@ etichetta.DrawLatex(0.45, 0.8, "#splitline{SL1_L4 threshold scan}{Runs: "+str(ru
 can_scan_SL1_L4.Update()
 can_scan_SL1_L4.Print(outpath + "ThresholdScan_SL1_L4_"+run_interval+".png")
 can_scan_SL1_L4.Print(outpath + "ThresholdScan_SL1_L4_"+run_interval+".pdf")
+graph.SetName("ThresholdScan_SL1_L4_"+run_interval)
+new_file_SL1_L4 = TFile(outpath + "Graph_thresholdScan_SL1_L4_"+run_interval+ ".root",'RECREATE')
+graph.Write()
 graph.Set(0)
 
 
