@@ -42,12 +42,10 @@ outpath = "/home/lisa/GIFcode/GIF_code/plots/" if LOCAL else "plots/"
 run_numbers = []
 if options.raw_list!="":
     ordered_list = [str(item) for item in options.raw_list.split(',')]
-    print "ordered list: ", ordered_list
     run_min = min(int(item) for item in ordered_list)
     run_max = max(int(item) for item in ordered_list)
     run_interval = "r"+str(run_min)+"-r"+str(run_max)
     for a in sorted(ordered_list):
-        print a
 	run_numbers.append(int(a))
 
 elif (options.raw_list=="" and (options.first_run and options.last_run) ):
@@ -96,7 +94,8 @@ for a in run_numbers:
                 ##Look for the second bin of statistics histogram
                 if "statistics->SetBinContent(2," in line:
                     ##Save normalized occupancy value under the key 'RATE_SL1_L1'
-                    run_parameters[a].update({'RATE_SL1_L1' : line[31:39]})
+                    new_line = line.replace("   ","").replace("statistics->SetBinContent(2,","").replace(");","")
+                    run_parameters[a].update({'RATE_SL1_L1' : new_line})
 
     elif os.path.exists(NTUPLEDIR+"Run"+str(a)+"/Efficiency"):
         print "EfficiencyNew does not exist!"
@@ -117,11 +116,12 @@ for a in run_numbers:
                 ##Look for the second bin of statistics histogram
                 if "statistics27->SetBinContent(2," in line:
                     ##Save normalized occupancy value under the key 'RATE_SL1_L1'
-                    print line[33:41]
-                    run_parameters[a].update({'RATE_SL1_L1' : line[33:41]})
+                    new_line = line.replace("   ","").replace("statistics27->SetBinContent(2,","").replace(");","")
+                    run_parameters[a].update({'RATE_SL1_L1' : new_line})
                 elif "statistics43->SetBinContent(2," in line:
                     ##Save normalized occupancy value under the key 'RATE_SL1_L1'
-                    run_parameters[a].update({'RATE_SL1_L1' : line[33:41]})
+                    new_line = line.replace("   ","").replace("statistics43->SetBinContent(2,","").replace(");","")
+                    run_parameters[a].update({'RATE_SL1_L1' : new_line})
                 #elif "statistics" in line:
                 #    print line
                 #else:
@@ -133,14 +133,14 @@ for a in run_numbers:
 
 
 ##Print a summary of the parameters read                
-print run_parameters
+#print run_parameters
 
 ##Dictionaries are unordered objects; let's create a new dictionary with thresholds
 threshold_scan = {}
 for a in sorted(run_parameters):
     threshold_scan.update( {int(run_parameters[a]['VTHR']) : run_parameters[a]['RATE_SL1_L1'] } )
 
-print threshold_scan
+#print threshold_scan
 
 ##Prepare the canvas to plot the scan for SL1_L1
 can_scan_SL1_L1 = TCanvas("can_scan_SL1_L1","can_scan_SL1_L1", 1000, 800)
@@ -151,7 +151,6 @@ graph = TGraphAsymmErrors()
 n=0
 for a in sorted(threshold_scan):
 #for a in sorted(run_parameters):
-    print a
     ##Fill the TGraph with threshold (x-axis) and rate (y-axis)
     #######graph.SetPoint(n,int(run_parameters[a]['VTHR']),float(run_parameters[a]['RATE_SL1_L1']))
     graph.SetPoint(n,int(a),float(threshold_scan[a]))
