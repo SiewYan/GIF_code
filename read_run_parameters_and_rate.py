@@ -78,6 +78,7 @@ for k in run_numbers:
 for a in run_numbers:
     ##Check if EfficiencyNew directory exists. Formats are different in EfficiencyNew wrt Efficiency old.
     if os.path.exists(NTUPLEDIR+"Run"+str(a)+"/EfficiencyNew"):
+        print "EfficiencyNew exists!"
     	##Read RunParameters.txt and save the variables in run_parameters dictionary
     	file_name[a]  = open(NTUPLEDIR+"Run"+str(a)+"/EfficiencyNew/RunParameters"+str(a)+".txt",'r')
     	##Read lines
@@ -98,6 +99,7 @@ for a in run_numbers:
                     run_parameters[a].update({'RATE_SL1_L1' : line[31:39]})
 
     elif os.path.exists(NTUPLEDIR+"Run"+str(a)+"/Efficiency"):
+        print "EfficiencyNew does not exist!"
     	##Read RunParameters.txt and save the variables in run_parameters dictionary
     	file_name[a]  = open(NTUPLEDIR+"Run"+str(a)+"/Efficiency/RunParameters"+str(a)+".txt",'r')
     	##Read lines
