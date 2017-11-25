@@ -77,8 +77,8 @@ for a in run_numbers:
         for line in f:
             ##Look for the second bin of statistics histogram
             if "statistics->SetBinContent(2," in line:
-                ##Save normalized occupancy value under the key 'RATE'
-                run_parameters[a].update({'RATE' : line[31:39]})
+                ##Save normalized occupancy value under the key 'RATE_SL1_L1'
+                run_parameters[a].update({'RATE_SL1_L1' : line[31:39]})
 
 ##Print a summary of the parameters read                
 print run_parameters
@@ -93,7 +93,7 @@ n=0
 for a in sorted(run_parameters):
     print a
     ##Fill the TGraph with threshold (x-axis) and rate (y-axis)
-    graph.SetPoint(n,int(run_parameters[a]['VTHR']),float(run_parameters[a]['RATE']))
+    graph.SetPoint(n,int(run_parameters[a]['VTHR']),float(run_parameters[a]['RATE_SL1_L1']))
     n = n+1
 graph.SetMarkerSize(1.)
 graph.SetMarkerStyle(21)
@@ -126,6 +126,7 @@ can_scan_SL1_L1.Update()
 can_scan_SL1_L1.Print(outpath + "ThresholdScan_SL1_L1_"+str(run_interval)+".png")
 can_scan_SL1_L1.Print(outpath + "ThresholdScan_SL1_L1_"+str(run_interval)+".pdf")
 
+'''
 ##Prepare the canvas to plot SL1_L4
 can_scan_SL1_L4 = TCanvas("can_scan_SL1_L4","can_scan_SL1_L4", 1000, 800)
 can_scan_SL1_L4.SetGrid()
@@ -136,7 +137,7 @@ n=0
 for a in sorted(run_parameters):
     print a
     ##Fill the TGraph with threshold (x-axis) and rate (y-axis)
-    graph.SetPoint(n,int(run_parameters[a]['VTHR']),float(run_parameters[a]['RATE']))
+    graph.SetPoint(n,int(run_parameters[a]['VTHR']),float(run_parameters[a]['RATE_SL1_L1']))
     n = n+1
 graph.SetMarkerSize(1.)
 graph.SetMarkerStyle(21)
@@ -168,5 +169,6 @@ etichetta.DrawLatex(0.45, 0.8, "#splitline{SL1_L4 threshold scan}{Runs: "+str(ru
 can_scan_SL1_L4.Update()
 can_scan_SL1_L4.Print(outpath + "ThresholdScan_SL1_L4_"+str(run_interval)+".png")
 can_scan_SL1_L4.Print(outpath + "ThresholdScan_SL1_L4_"+str(run_interval)+".pdf")
+'''
 
 if not gROOT.IsBatch(): raw_input("Press Enter to continue...")
