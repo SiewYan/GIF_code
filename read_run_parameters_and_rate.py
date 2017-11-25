@@ -56,6 +56,9 @@ if options.raw_list!="":
         run_interval = "r"+str(run_min)+"-r"+str(run_max)
         for a in range(run_min,run_max+1,1):
             run_numbers.append(a)
+    else:
+        print "Not a valid run interval!! Aborting.."
+        exit()
 
 elif (options.raw_list=="" and (options.first_run and options.last_run) ):
     ##Sort the minimum-maximum range of the considered runs
