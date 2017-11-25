@@ -117,13 +117,16 @@ for a in run_numbers:
                 ##Look for the second bin of statistics histogram
                 if "statistics27->SetBinContent(2," in line:
                     ##Save normalized occupancy value under the key 'RATE_SL1_L1'
+                    print line[33:41]
                     run_parameters[a].update({'RATE_SL1_L1' : line[33:41]})
                 elif "statistics43->SetBinContent(2," in line:
                     ##Save normalized occupancy value under the key 'RATE_SL1_L1'
                     run_parameters[a].update({'RATE_SL1_L1' : line[33:41]})
-                else:
-                    print "Occupancy plot not found!! Aborting..."
-                    exit()
+                #elif "statistics" in line:
+                #    print line
+                #else:
+                #    print "Occupancy plot not found!! Aborting..."
+                #    exit()
     else:
         print "Cannot read RunParameters.txt!! Aborting..."
         exit()
