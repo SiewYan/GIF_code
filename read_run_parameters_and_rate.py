@@ -60,32 +60,37 @@ for k in run_numbers:
 
 ##Loop on considered runs
 for a in run_numbers:
-    ##Check if EfficiencyNew directory exists
+    ##Check if EfficiencyNew directory exists. Formats are different in EfficiencyNew wrt Efficiency old.
     if os.path.exists(NTUPLEDIR+"Run"+str(a)+"/EfficiencyNew"):
     	##Read RunParameters.txt and save the variables in run_parameters dictionary
     	file_name[a]  = open(NTUPLEDIR+"Run"+str(a)+"/EfficiencyNew/RunParameters"+str(a)+".txt",'r')
+    	##Read lines
+    	for line in file_name[a]:
+            ##Split columns (thanks to Sergio)
+            columns = line.split(" ")
+            ##Save column[0] of RunParameters.txt as the dictionary index, and column[1] as the corresponding value
+            run_parameters[a].update({columns[0]:columns[1]})
+        ##Search for Occ_NormStat macro: first create the string name
+        occ_name = "Occ_NormStat_"+str(a)+"_HV"+str(run_parameters[a]['HV'])+"_vth"+str(run_parameters[a]['VTHR'])+"_SLL"+str(run_parameters[a]['LSTEST']+run_parameters[a]['LAYERHV'])+"_Att"+str(run_parameters[a]['FILTER'])+"_"+str(run_parameters[a]['TRIGGER'])+".C"
+        ##Now open the macro
+        with open(NTUPLEDIR+"Run"+str(a)+"/EfficiencyNew/"+occ_name) as f:
+            ##Loop in the macro lines
+            for line in f:
+                ##Look for the second bin of statistics histogram
+                if "statistics->SetBinContent(2," in line:
+                    ##Save normalized occupancy value under the key 'RATE_SL1_L1'
+                    run_parameters[a].update({'RATE_SL1_L1' : line[31:39]})
+
     elif os.path.exists(NTUPLEDIR+"Run"+str(a)+"/Efficiency"):
     	##Read RunParameters.txt and save the variables in run_parameters dictionary
     	file_name[a]  = open(NTUPLEDIR+"Run"+str(a)+"/Efficiency/RunParameters"+str(a)+".txt",'r')
+    	##Read lines
+    	for line in file_name[a]:
+            print line
     else:
         print "Cannot read RunParameters.txt!! Aborting..."
         exit()
-    ##Read lines
-    for line in file_name[a]:
-        ##Split columns (thanks to Sergio)
-        columns = line.split(" ")
-        ##Save column[0] of RunParameters.txt as the dictionary index, and column[1] as the corresponding value
-        run_parameters[a].update({columns[0]:columns[1]})
-    ##Search for Occ_NormStat macro: first create the string name
-    occ_name = "Occ_NormStat_"+str(a)+"_HV"+str(run_parameters[a]['HV'])+"_vth"+str(run_parameters[a]['VTHR'])+"_SLL"+str(run_parameters[a]['LSTEST']+run_parameters[a]['LAYERHV'])+"_Att"+str(run_parameters[a]['FILTER'])+"_"+str(run_parameters[a]['TRIGGER'])+".C"
-    ##Now open the macro
-    with open(NTUPLEDIR+"Run"+str(a)+"/EfficiencyNew/"+occ_name) as f:
-        ##Loop in the macro lines
-        for line in f:
-            ##Look for the second bin of statistics histogram
-            if "statistics->SetBinContent(2," in line:
-                ##Save normalized occupancy value under the key 'RATE_SL1_L1'
-                run_parameters[a].update({'RATE_SL1_L1' : line[31:39]})
+
 
 ##Print a summary of the parameters read                
 print run_parameters
