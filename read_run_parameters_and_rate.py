@@ -22,8 +22,9 @@ parser = optparse.OptionParser(usage)
 parser.add_option("-v", "--variable", action="store", type="string", dest="variable", default="digi_layer")
 parser.add_option("-l", "--local", action="store_true", default=False, dest="local")
 parser.add_option("-b", "--bash", action="store_true", default=False, dest="bash")
-parser.add_option("-F", "--first_run", action="store", type="int", default=5862, dest="first_run")
-parser.add_option("-L", "--last_run", action="store", type="int", default=5868, dest="last_run")
+parser.add_option("-F", "--first_run", action="store", type="int", default=0, dest="first_run")
+parser.add_option("-L", "--last_run", action="store", type="int", default=0, dest="last_run")
+parser.add_option("-e", "--raw_list", action="store", type="string", dest="raw_list", default="")
 #parser.add_option("-l", "--last_run", action="store", type="string", default="1", dest="last_run")
 (options, args) = parser.parse_args()
 if options.bash: gROOT.SetBatch(True)
@@ -37,15 +38,30 @@ NTUPLEDIR   = "/home/lisa/GIFcode/GIF_code/ntuples_POA/" if LOCAL else "/afs/cer
 outpath = "/home/lisa/GIFcode/GIF_code/plots/" if LOCAL else "plots/"
 ########## SAMPLES ##########
 
-##Sort the minimum-maximum range of the considered runs
-run_min = min(options.first_run, options.last_run)
-run_max = max(options.first_run, options.last_run)
-run_interval = "r"+str(run_min)+"-r"+str(run_max)
+##First check if a manual list of runs has been inserted:
 run_numbers = []
+if options.raw_list!="":
+    ordered_list = [str(item) for item in options.raw_list.split(',')]
+    print "ordered list: ", ordered_list
+    run_min = min(int(item) for item in ordered_list)
+    run_max = max(int(item) for item in ordered_list)
+    run_interval = "r"+str(run_min)+"-r"+str(run_max)
+    for a in sorted(ordered_list):
+        print a
+	run_numbers.append(int(a))
 
-##Create the run list
-for a in range(run_min,run_max+1,1):
-    run_numbers.append(a)
+elif (options.raw_list=="" and (options.first_run and options.last_run) ):
+    ##Sort the minimum-maximum range of the considered runs
+    run_min = min(options.first_run, options.last_run)
+    run_max = max(options.first_run, options.last_run)
+    run_interval = "r"+str(run_min)+"-r"+str(run_max)
+    ##Create the run list
+    for a in range(run_min,run_max+1,1):
+        run_numbers.append(a)
+
+else:
+    print "Invalid run range!! Aborting..."
+    exit()
 
 ##Initialize dictionaries
 file_name = {}
@@ -98,6 +114,13 @@ for a in run_numbers:
 ##Print a summary of the parameters read                
 print run_parameters
 
+##Dictionaries are unordered objects; let's create a new dictionary with thresholds
+threshold_scan = {}
+for a in sorted(run_parameters):
+    threshold_scan.update( {int(run_parameters[a]['VTHR']) : run_parameters[a]['RATE_SL1_L1'] } )
+
+print threshold_scan
+
 ##Prepare the canvas to plot the scan for SL1_L1
 can_scan_SL1_L1 = TCanvas("can_scan_SL1_L1","can_scan_SL1_L1", 1000, 800)
 can_scan_SL1_L1.SetGrid()
@@ -105,10 +128,12 @@ can_scan_SL1_L1.cd()
 ##Prepare summary TGraph
 graph = TGraphAsymmErrors()
 n=0
-for a in sorted(run_parameters):
+for a in sorted(threshold_scan):
+#for a in sorted(run_parameters):
     print a
     ##Fill the TGraph with threshold (x-axis) and rate (y-axis)
-    graph.SetPoint(n,int(run_parameters[a]['VTHR']),float(run_parameters[a]['RATE_SL1_L1']))
+    #######graph.SetPoint(n,int(run_parameters[a]['VTHR']),float(run_parameters[a]['RATE_SL1_L1']))
+    graph.SetPoint(n,int(a),float(threshold_scan[a]))
     n = n+1
 graph.SetMarkerSize(1.)
 graph.SetMarkerStyle(21)
