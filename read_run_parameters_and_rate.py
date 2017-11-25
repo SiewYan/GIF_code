@@ -30,12 +30,14 @@ parser.add_option("-e", "--raw_list", action="store", type="string", dest="raw_l
 if options.bash: gROOT.SetBatch(True)
 
 ########## SETTINGS ##########
-
 gStyle.SetOptStat(0)
-##For running in local: python read_run_parameters_and_rate.py -l
+##For running outside lxplus: python read_run_parameters_and_rate.py -l
 LOCAL       = options.local
 NTUPLEDIR   = "/home/lisa/GIFcode/GIF_code/ntuples_POA/" if LOCAL else "/afs/cern.ch/cms/MUON/dt/sx5/Results/GIF2017/MB2/"
-outpath = "/home/lisa/GIFcode/GIF_code/plots/" if LOCAL else "plots/"
+##Modify your local outpath!
+if not os.path.exists("plots"):
+    os.system("mkdir plots")
+outpath = "plots/"
 ########## SAMPLES ##########
 
 ##First check if a manual list of runs has been inserted:
