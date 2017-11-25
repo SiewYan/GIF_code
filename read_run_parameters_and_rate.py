@@ -57,7 +57,6 @@ line = {}
 run_parameters = {}
 for k in run_numbers:
     run_parameters.update({int(k):{}})
-print run_parameters
 
 ##Loop on considered runs
 for a in run_numbers:
