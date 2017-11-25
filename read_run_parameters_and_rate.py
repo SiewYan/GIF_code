@@ -38,7 +38,7 @@ NTUPLEDIR   = "/home/lisa/GIFcode/GIF_code/ntuples_POA/" if LOCAL else "/afs/cer
 outpath = "/home/lisa/GIFcode/GIF_code/plots/" if LOCAL else "plots/"
 ########## SAMPLES ##########
 
-print options.first_run
+#print options.first_run
 
 #run_min = 5891#options.run1#5891
 #run_max = 5891#options.run2#5891
@@ -53,34 +53,41 @@ for a in range(run_min,run_max+1,1):
 
 file_name = {} #dictionary, one file per run
 line = {} #dictionary
-parameters = { k:{} for k in run_numbers}
+##Usual dictionary of dictionaries definition:
+#run_parameters =  { k:{} for k in run_numbers}
+##for some reasons, in lxplus the usual definition of a dictionary of dictionaries doesn't work.
+##Workaround:
+run_parameters = {}
+for k in run_numbers:
+    run_parameters.update({int(k):{}})
+print run_parameters
 
 for a in run_numbers:
     #read run parameters and save them in the parameters dictionary
     file_name[a]  = open(NTUPLEDIR+"Run"+str(a)+"/EfficiencyNew/RunParameters"+str(a)+".txt",'r')
     for line in file_name[a]:
         columns = line.split(" ")
-        parameters[a].update({columns[0]:columns[1]})
+        run_parameters[a].update({columns[0]:columns[1]})
     #grep from occupancy
     #os.system("ls "+ NTUPLEDIR+"Run"+str(a)+"/EfficiencyNew/Occ_NormStat*.C")
-    occ_name = "Occ_NormStat_"+str(a)+"_HV"+str(parameters[a]['HV'])+"_vth"+str(parameters[a]['VTHR'])+"_SLL"+str(parameters[a]['LSTEST']+parameters[a]['LAYERHV'])+"_Att"+str(parameters[a]['FILTER'])+"_"+str(parameters[a]['TRIGGER'])+".C"
+    occ_name = "Occ_NormStat_"+str(a)+"_HV"+str(run_parameters[a]['HV'])+"_vth"+str(run_parameters[a]['VTHR'])+"_SLL"+str(run_parameters[a]['LSTEST']+run_parameters[a]['LAYERHV'])+"_Att"+str(run_parameters[a]['FILTER'])+"_"+str(run_parameters[a]['TRIGGER'])+".C"
     print occ_name
     with open(NTUPLEDIR+"Run"+str(a)+"/EfficiencyNew/"+occ_name) as f:
         for line in f:
             if "statistics->SetBinContent(2," in line:
-                parameters[a].update({'RATE' : line[31:39]})
+                run_parameters[a].update({'RATE' : line[31:39]})
                 
-print parameters
+print run_parameters
 
 can_scan_SL1_L1 = TCanvas("can_scan_SL1_L1","can_scan_SL1_L1", 1000, 800)
 can_scan_SL1_L1.SetGrid()
 can_scan_SL1_L1.cd()
 graph = TGraphAsymmErrors()
 n=0
-for a in sorted(parameters):
+for a in sorted(run_parameters):
     print a
     #graph = TGraphAsymmErrors()
-    graph.SetPoint(n,int(parameters[a]['VTHR']),float(parameters[a]['RATE']))
+    graph.SetPoint(n,int(run_parameters[a]['VTHR']),float(run_parameters[a]['RATE']))
     n = n+1
 graph.SetMarkerSize(1.)
 graph.SetMarkerStyle(21)
@@ -92,7 +99,7 @@ graph.SetLineWidth(2)
 graph.SetLineStyle(2)
 graph.GetXaxis().SetTitle("threshold [mV]")
 graph.GetYaxis().SetTitleOffset(1.2)
-graph.GetYaxis().SetTitle("rate [kHz]")
+graph.GetYaxis().SetTitle("rate [Hz]")
 graph.Draw("APL")
 latex = TLatex()
 latex.SetNDC()
