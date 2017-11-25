@@ -86,7 +86,10 @@ for a in run_numbers:
     	file_name[a]  = open(NTUPLEDIR+"Run"+str(a)+"/Efficiency/RunParameters"+str(a)+".txt",'r')
     	##Read lines
     	for line in file_name[a]:
-            print line
+            ##Split columns (thanks to Sergio)
+            columns = line.split(" ")
+            ##Save column[0] of RunParameters.txt as the dictionary index, and column[1] as the corresponding value
+            run_parameters[a].update({columns[0]:columns[1]})
     else:
         print "Cannot read RunParameters.txt!! Aborting..."
         exit()
