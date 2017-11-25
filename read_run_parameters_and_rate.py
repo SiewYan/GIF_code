@@ -60,8 +60,16 @@ for k in run_numbers:
 
 ##Loop on considered runs
 for a in run_numbers:
-    ##Read RunParameters.txt and save the variables in run_parameters dictionary
-    file_name[a]  = open(NTUPLEDIR+"Run"+str(a)+"/EfficiencyNew/RunParameters"+str(a)+".txt",'r')
+    ##Check if EfficiencyNew directory exists
+    if os.path.exists(NTUPLEDIR+"Run"+str(a)+"/EfficiencyNew"):
+    	##Read RunParameters.txt and save the variables in run_parameters dictionary
+    	file_name[a]  = open(NTUPLEDIR+"Run"+str(a)+"/EfficiencyNew/RunParameters"+str(a)+".txt",'r')
+    elif os.path.exists(NTUPLEDIR+"Run"+str(a)+"/Efficiency"):
+    	##Read RunParameters.txt and save the variables in run_parameters dictionary
+    	file_name[a]  = open(NTUPLEDIR+"Run"+str(a)+"/Efficiency/RunParameters"+str(a)+".txt",'r')
+    else:
+        print "Cannot read RunParameters.txt!! Aborting..."
+        exit()
     ##Read lines
     for line in file_name[a]:
         ##Split columns (thanks to Sergio)
