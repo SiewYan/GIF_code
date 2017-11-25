@@ -41,12 +41,21 @@ outpath = "/home/lisa/GIFcode/GIF_code/plots/" if LOCAL else "plots/"
 ##First check if a manual list of runs has been inserted:
 run_numbers = []
 if options.raw_list!="":
-    ordered_list = [str(item) for item in options.raw_list.split(',')]
-    run_min = min(int(item) for item in ordered_list)
-    run_max = max(int(item) for item in ordered_list)
-    run_interval = "r"+str(run_min)+"-r"+str(run_max)
-    for a in sorted(ordered_list):
-	run_numbers.append(int(a))
+    if "," in options.raw_list:
+        ordered_list = [str(item) for item in options.raw_list.split(',')]
+        run_min = min(int(item) for item in ordered_list)
+        run_max = max(int(item) for item in ordered_list)
+        run_interval = "r"+str(run_min)+"-r"+str(run_max)
+        for a in sorted(ordered_list):
+            run_numbers.append(int(a))
+    elif "-" in options.raw_list:
+        ordered_list = [str(item) for item in options.raw_list.split('-')]
+        #print ordered_list
+        run_min = min(int(item) for item in ordered_list)
+        run_max = max(int(item) for item in ordered_list)
+        run_interval = "r"+str(run_min)+"-r"+str(run_max)
+        for a in range(run_min,run_max+1,1):
+            run_numbers.append(a)
 
 elif (options.raw_list=="" and (options.first_run and options.last_run) ):
     ##Sort the minimum-maximum range of the considered runs
@@ -76,7 +85,7 @@ for k in run_numbers:
 for a in run_numbers:
     ##Check if EfficiencyNew directory exists. Formats are different in EfficiencyNew wrt Efficiency old.
     if os.path.exists(NTUPLEDIR+"Run"+str(a)+"/EfficiencyNew"):
-        print "EfficiencyNew exists!"
+        #print "EfficiencyNew exists!"
     	##Read RunParameters.txt and save the variables in run_parameters dictionary
     	file_name[a]  = open(NTUPLEDIR+"Run"+str(a)+"/EfficiencyNew/RunParameters"+str(a)+".txt",'r')
     	##Read lines
@@ -98,7 +107,7 @@ for a in run_numbers:
                     run_parameters[a].update({'RATE_SL1_L1' : new_line})
 
     elif os.path.exists(NTUPLEDIR+"Run"+str(a)+"/Efficiency"):
-        print "EfficiencyNew does not exist!"
+        #print "EfficiencyNew does not exist!"
     	##Read RunParameters.txt and save the variables in run_parameters dictionary
     	file_name[a]  = open(NTUPLEDIR+"Run"+str(a)+"/Efficiency/RunParameters"+str(a)+".txt",'r')
     	##Read lines
