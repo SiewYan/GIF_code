@@ -122,8 +122,8 @@ for a in run_numbers:
                     ##Save normalized occupancy value under the key 'RATE_SL1_L1'
                     run_parameters[a].update({'RATE_SL1_L1' : line[33:41]})
                 else:
-                    "Occupancy plot not found!! Aborting..."
-                     exit()
+                    print "Occupancy plot not found!! Aborting..."
+                    exit()
     else:
         print "Cannot read RunParameters.txt!! Aborting..."
         exit()
