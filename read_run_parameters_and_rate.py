@@ -108,6 +108,22 @@ for a in run_numbers:
             columns = line.split(" ")
             ##Save column[0] of RunParameters.txt as the dictionary index, and column[1] as the corresponding value
             run_parameters[a].update({columns[0]:columns[1]})
+        ##Search for Occ_NormStat macro: first create the string name
+        occ_name = "Occ_NormStat_"+str(a)+"_HV"+str(run_parameters[a]['HV'])+"_vth"+str(run_parameters[a]['VTHR'])+"_SLL"+str(run_parameters[a]['LSTEST']+run_parameters[a]['LAYERHV'])+"_Att"+str(run_parameters[a]['FILTER'])+".C"
+        ##Now open the macro
+        with open(NTUPLEDIR+"Run"+str(a)+"/Efficiency/"+occ_name) as f:
+            ##Loop in the macro lines
+            for line in f:
+                ##Look for the second bin of statistics histogram
+                if "statistics27->SetBinContent(2," in line:
+                    ##Save normalized occupancy value under the key 'RATE_SL1_L1'
+                    run_parameters[a].update({'RATE_SL1_L1' : line[33:41]})
+                elif "statistics43->SetBinContent(2," in line:
+                    ##Save normalized occupancy value under the key 'RATE_SL1_L1'
+                    run_parameters[a].update({'RATE_SL1_L1' : line[33:41]})
+                else:
+                    "Occupancy plot not found!! Aborting..."
+                     exit()
     else:
         print "Cannot read RunParameters.txt!! Aborting..."
         exit()
